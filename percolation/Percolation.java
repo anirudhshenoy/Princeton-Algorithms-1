@@ -22,14 +22,10 @@ public class Percolation {
             grid.union(i, i + 1);
             grid.union(getIndex(size, i), getIndex(size, i + 1));
         }
-        topRowIdentifier = grid.find(1);
-        botRowIdentifier = grid.find(getIndex(size, 1));
-
-        for (int row = 1; row <= size; row++) {
-            for (int col = 1; col <= size; col++) {
-                gridSites[row][col] = false;
-            }
-        }
+        //topRowIdentifier = grid.find(1);
+        //botRowIdentifier = grid.find(getIndex(size, 1));
+        topRowIdentifier = 0;
+        botRowIdentifier = n * n;
     }
 
     private int getIndex(int row, int col) {
@@ -45,13 +41,19 @@ public class Percolation {
         }
         gridSites[row][col] = true;
         openSites++;
+        if (row == 1) {
+            grid.union(getIndex(row, col), topRowIdentifier);
+        }
+        if (row == size) {
+            grid.union(getIndex(row, col), botRowIdentifier);
+        }
         if ((((row - 1) <= size) && ((row - 1) > 0)) && isOpen(row - 1, col)) {
             grid.union(getIndex(row - 1, col), getIndex(row, col));
         }
-        if (((row + 1) <= size) && ((row + 1) > 0) && isOpen(row + 1, col)) {
+        if (((row + 1) <= size) && isOpen(row + 1, col)) {
             grid.union(getIndex(row + 1, col), getIndex(row, col));
         }
-        if (((col + 1) <= size) && ((col + 1) > 0) && isOpen(row, col + 1)) {
+        if (((col + 1) <= size) && isOpen(row, col + 1)) {
             grid.union(getIndex(row, col + 1), getIndex(row, col));
         }
         if (((col - 1) <= size) && ((col - 1) > 0) && isOpen(row, col - 1)) {
