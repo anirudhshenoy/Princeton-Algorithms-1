@@ -22,8 +22,6 @@ public class Percolation {
             grid.union(i, i + 1);
             grid.union(getIndex(size, i), getIndex(size, i + 1));
         }
-        //topRowIdentifier = grid.find(1);
-        //botRowIdentifier = grid.find(getIndex(size, 1));
         topRowIdentifier = 0;
         botRowIdentifier = n * n;
     }
