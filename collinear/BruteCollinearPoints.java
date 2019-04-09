@@ -35,7 +35,6 @@ public class BruteCollinearPoints {
                         double slope3 = pointsCopy[p].slopeTo(pointsCopy[s]);
                         if (slope1 == slope2 && slope2 == slope3) {
                             lines.add(new LineSegment(pointsCopy[p], pointsCopy[s]));
-                            n++;
                         }
                     }
                 }
@@ -83,7 +82,6 @@ public class BruteCollinearPoints {
             p.draw();
         }
         StdDraw.show();
-        points[0] = null;
         // print and draw the line segments
         BruteCollinearPoints collinear = new BruteCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
