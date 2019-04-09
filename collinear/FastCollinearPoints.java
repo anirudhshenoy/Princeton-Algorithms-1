@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class BruteCollinearPoints {
+public class FastCollinearPoints {
     private LineSegment[] ls;
 
-
-    public BruteCollinearPoints(Point[] points) {
+    public FastCollinearPoints(Point[] points) {
         if (points == null) {
             throw new IllegalArgumentException();
         }
@@ -25,24 +23,31 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException();
         }
         List<LineSegment> lines = new ArrayList<>();
-
-        for (int p = 0; p < pointsCopy.length - 3; p++) {
-            for (int q = p + 1; q < pointsCopy.length - 2; q++) {
-                for (int r = q + 1; r < pointsCopy.length - 1; r++) {
-                    for (int s = r + 1; s < pointsCopy.length; s++) {
-                        double slope1 = pointsCopy[p].slopeTo(pointsCopy[q]);
-                        double slope2 = pointsCopy[p].slopeTo(pointsCopy[r]);
-                        double slope3 = pointsCopy[p].slopeTo(pointsCopy[s]);
-                        if (slope1 == slope2 && slope2 == slope3) {
-                            lines.add(new LineSegment(pointsCopy[p], pointsCopy[s]));
-                            n++;
-                        }
+        for (int i = 0; i < pointsCopy.length; i++) {
+            Arrays.sort(pointsCopy);                                                //Arrays.sort is stable for Objects[]
+            Arrays.sort(pointsCopy, pointsCopy[i].slopeOrder());
+            for (int second = 1, third = 2, fourth = 3;
+                 fourth < pointsCopy.length;
+                 second++, third++, fourth++) {
+                double slope1 = pointsCopy[0].slopeTo(pointsCopy[second]);
+                double slope2 = pointsCopy[0].slopeTo(pointsCopy[third]);
+                double slope3 = pointsCopy[0].slopeTo(pointsCopy[fourth]);
+                if (slope1 == slope2 && slope2 == slope3) {                     //Not a good idea to compare doubles like this
+                    while (fourth + 1 < pointsCopy.length && slope3 == pointsCopy[fourth].slopeTo(pointsCopy[fourth + 1])) {
+                        fourth++;
                     }
+                    if (pointsCopy[0].compareTo(pointsCopy[second]) < 0) {
+                        lines.add(new LineSegment(pointsCopy[0], pointsCopy[fourth]));
+                    }
+                    second = fourth;
+                    third = second + 1;
+                    fourth += 2;
                 }
             }
         }
         ls = lines.toArray(new LineSegment[lines.size()]);
     }
+
 
     public int numberOfSegments() {
         return ls.length;
@@ -63,9 +68,10 @@ public class BruteCollinearPoints {
         return false;
     }
 
+
     public static void main(String[] args) {
 
-        // read the n pointsCopy from a file
+        // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
         Point[] points = new Point[n];
@@ -75,7 +81,7 @@ public class BruteCollinearPoints {
             points[i] = new Point(x, y);
         }
 
-        // draw the pointsCopy
+        // draw the points
         StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
@@ -83,13 +89,15 @@ public class BruteCollinearPoints {
             p.draw();
         }
         StdDraw.show();
-        points[0] = null;
+        
         // print and draw the line segments
-        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
         }
         StdDraw.show();
     }
+
+
 }
