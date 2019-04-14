@@ -10,9 +10,7 @@ public class Board {
         for (int i = 0; i < blocks.length; i++) {
             System.arraycopy(blocks[i], 0, tiles[i], 0, blocks[i].length);
         }
-
         n = blocks.length;
-
     }
 
     public int dimension() {
@@ -52,6 +50,8 @@ public class Board {
     }
 
     public boolean isGoal() {
+        if (hamming() == 0)
+            return true;
         return false;
     }
 
@@ -76,13 +76,38 @@ public class Board {
         return rowCol;
     }
 
-    // TODO
-    public int neighbours() {
-        Stack s = new Stack();
+    private int[][] swappedArray(int zeroIndex[], int rowIndex, int colIndex) {
+        int temp;
+        int[][] tilesCopy = new int[tiles.length][tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            System.arraycopy(tiles[i], 0, tilesCopy[i], 0, tiles[i].length);
+        }
+        temp = tilesCopy[zeroIndex[0]][zeroIndex[1]];
+        tilesCopy[zeroIndex[0]][zeroIndex[1]] = tilesCopy[zeroIndex[0] + rowIndex][zeroIndex[1] + colIndex];
+        tilesCopy[zeroIndex[0] + rowIndex][zeroIndex[1] + colIndex] = temp;
+        return tilesCopy;
+    }
+
+    public Iterable<Board> neighbours() {
+        Stack<Board> s = new Stack<>();
         int[] rowCol = findZero();
         if ((rowCol[0] - 1) >= 0) {
-
+            Board neighbour = new Board(swappedArray(rowCol, -1, 0));
+            s.push(neighbour);
         }
+        if ((rowCol[0] + 1) < tiles.length) {
+            Board neighbour = new Board(swappedArray(rowCol, +1, 0));
+            s.push(neighbour);
+        }
+        if ((rowCol[1] - 1) >= 0) {
+            Board neighbour = new Board(swappedArray(rowCol, 0, -1));
+            s.push(neighbour);
+        }
+        if ((rowCol[1] + 1) < tiles.length) {
+            Board neighbour = new Board(swappedArray(rowCol, 0, +1));
+            s.push(neighbour);
+        }
+        return s;
 
     }
 
@@ -107,9 +132,7 @@ public class Board {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-        System.out.println(initial.hamming());
-        System.out.println(initial.manhattan());
-        initial.neighbours();
-
+        for (Board b : initial.neighbours())
+            System.out.println(b.toString());
     }
 }
