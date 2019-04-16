@@ -6,6 +6,9 @@ public class Board {
     private final int n;
 
     public Board(int[][] blocks) {
+        if (blocks == null) {
+            throw new IllegalArgumentException();
+        }
         tiles = new int[blocks.length][blocks.length];
         for (int i = 0; i < blocks.length; i++) {
             System.arraycopy(blocks[i], 0, tiles[i], 0, blocks[i].length);
@@ -55,13 +58,30 @@ public class Board {
         return false;
     }
 
-    /*
-        public Board twin() {
 
+    public Board twin() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n - 1; j++) {
+                if ((tiles[i][j] != 0) && (tiles[i][j + 1] != 0)) {
+                    return (new Board(swappedArray(i, j, 0, 1)));
+                }
+            }
         }
-    */
+        return (new Board(swappedArray(0, 0, 0, 1)));
+    }
+
     public boolean equals(Object y) {
-        return false;
+        if (y == null) return false;
+        if (y == this) return true;
+        if (y.getClass() != this.getClass()) return false;
+        Board that = (Board) y;
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles.length; j++) {
+                if (this.tiles[i][j] != that.tiles[i][j])
+                    return false;
+            }
+        }
+        return true;
     }
 
     private int[] findZero() {
@@ -76,15 +96,17 @@ public class Board {
         return rowCol;
     }
 
-    private int[][] swappedArray(int zeroIndex[], int rowIndex, int colIndex) {
+    //rowB and colB are offsets from rowA, colA
+
+    private int[][] swappedArray(int rowA, int colA, int rowB, int colB) {
         int temp;
         int[][] tilesCopy = new int[tiles.length][tiles.length];
         for (int i = 0; i < tiles.length; i++) {
             System.arraycopy(tiles[i], 0, tilesCopy[i], 0, tiles[i].length);
         }
-        temp = tilesCopy[zeroIndex[0]][zeroIndex[1]];
-        tilesCopy[zeroIndex[0]][zeroIndex[1]] = tilesCopy[zeroIndex[0] + rowIndex][zeroIndex[1] + colIndex];
-        tilesCopy[zeroIndex[0] + rowIndex][zeroIndex[1] + colIndex] = temp;
+        temp = tilesCopy[rowA][colA];
+        tilesCopy[rowA][colA] = tilesCopy[rowA + rowB][colA + colB];
+        tilesCopy[rowA + rowB][colA + colB] = temp;
         return tilesCopy;
     }
 
@@ -92,19 +114,19 @@ public class Board {
         Stack<Board> s = new Stack<>();
         int[] rowCol = findZero();
         if ((rowCol[0] - 1) >= 0) {
-            Board neighbour = new Board(swappedArray(rowCol, -1, 0));
+            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], -1, 0));
             s.push(neighbour);
         }
         if ((rowCol[0] + 1) < tiles.length) {
-            Board neighbour = new Board(swappedArray(rowCol, +1, 0));
+            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], +1, 0));
             s.push(neighbour);
         }
         if ((rowCol[1] - 1) >= 0) {
-            Board neighbour = new Board(swappedArray(rowCol, 0, -1));
+            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], 0, -1));
             s.push(neighbour);
         }
         if ((rowCol[1] + 1) < tiles.length) {
-            Board neighbour = new Board(swappedArray(rowCol, 0, +1));
+            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], 0, +1));
             s.push(neighbour);
         }
         return s;
@@ -132,7 +154,8 @@ public class Board {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-        for (Board b : initial.neighbours())
-            System.out.println(b.toString());
+        System.out.println(initial);
+        System.out.println(initial.twin());
+
     }
 }
