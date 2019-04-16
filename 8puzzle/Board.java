@@ -75,6 +75,7 @@ public class Board {
         if (y == this) return true;
         if (y.getClass() != this.getClass()) return false;
         Board that = (Board) y;
+        if (this.tiles.length != that.tiles.length) return false;
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles.length; j++) {
                 if (this.tiles[i][j] != that.tiles[i][j])
@@ -96,7 +97,7 @@ public class Board {
         return rowCol;
     }
 
-    //rowB and colB are offsets from rowA, colA
+    // rowB and colB are offsets from rowA, colA
 
     private int[][] swappedArray(int rowA, int colA, int rowB, int colB) {
         int temp;
@@ -154,8 +155,16 @@ public class Board {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-        System.out.println(initial);
-        System.out.println(initial.twin());
+        in = new In(args[1]);
+        n = in.readInt();
+        blocks = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                blocks[i][j] = in.readInt();
+        Board initial2 = new Board(blocks);
+
+        System.out.println(initial.equals(initial2));
+
 
     }
 }

@@ -4,23 +4,21 @@ import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
-    private MinPQ<searchNode> pq = new MinPQ<>();
-    private MinPQ<searchNode> twinpq = new MinPQ<>();
-    private searchNode best;
-    private boolean solvable = false;
+    private SearchNode best;
+    private boolean solvable;
 
-    private class searchNode implements Comparable<searchNode> {
+    private class SearchNode implements Comparable<SearchNode> {
         public Board curBoard;
-        public searchNode prev;
+        public SearchNode prev;
         public int movesTillNode;
 
-        public searchNode(Board current, searchNode previous, int moves) {
+        public SearchNode(Board current, SearchNode previous, int moves) {
             curBoard = current;
             prev = previous;
             movesTillNode = moves;
         }
 
-        public int compareTo(searchNode n) {
+        public int compareTo(SearchNode n) {
             int thisToGoal = this.movesTillNode + this.curBoard.manhattan();
             int thatToGoal = n.movesTillNode + n.curBoard.manhattan();
             return thisToGoal - thatToGoal;
@@ -29,12 +27,14 @@ public class Solver {
     }
 
     public Solver(Board initial) {
-        searchNode bestTwin;
+        final MinPQ<SearchNode> pq = new MinPQ<>();
+        final MinPQ<SearchNode> twinpq = new MinPQ<>();
+        SearchNode bestTwin;
         if (initial == null) {
             throw new IllegalArgumentException();
         }
-        pq.insert(new searchNode(initial, null, 0));
-        twinpq.insert(new searchNode(initial.twin(), null, 0));
+        pq.insert(new SearchNode(initial, null, 0));
+        twinpq.insert(new SearchNode(initial.twin(), null, 0));
         while (true) {
             best = pq.delMin();
             bestTwin = twinpq.delMin();
@@ -43,16 +43,17 @@ public class Solver {
                 break;
             }
             if (bestTwin.curBoard.isGoal()) {
+                solvable = false;
                 break;
             }
             for (Board neighbors : best.curBoard.neighbors()) {
                 if (best.prev == null || !neighbors.equals(best.prev.curBoard)) {
-                    pq.insert(new searchNode(neighbors, best, best.movesTillNode + 1));
+                    pq.insert(new SearchNode(neighbors, best, best.movesTillNode + 1));
                 }
             }
             for (Board neighbors : bestTwin.curBoard.neighbors()) {
                 if (bestTwin.prev == null || !neighbors.equals(bestTwin.prev.curBoard)) {
-                    twinpq.insert(new searchNode(neighbors, bestTwin, bestTwin.movesTillNode + 1));
+                    twinpq.insert(new SearchNode(neighbors, bestTwin, bestTwin.movesTillNode + 1));
                 }
             }
 
@@ -75,12 +76,13 @@ public class Solver {
             return null;
         }
         Stack<Board> solutionPath = new Stack<>();
+        SearchNode node = best;
         while (true) {
-            solutionPath.push(best.curBoard);
-            if (best.prev == null) {
+            solutionPath.push(node.curBoard);
+            if (node.prev == null) {
                 break;
             }
-            best = best.prev;
+            node = node.prev;
         }
         return solutionPath;
     }
