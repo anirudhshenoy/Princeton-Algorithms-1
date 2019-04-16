@@ -45,14 +45,14 @@ public class Solver {
             if (bestTwin.curBoard.isGoal()) {
                 break;
             }
-            for (Board neighbours : best.curBoard.neighbours()) {
-                if (best.prev == null || !neighbours.equals(best.prev.curBoard)) {
-                    pq.insert(new searchNode(neighbours, best, best.movesTillNode + 1));
+            for (Board neighbors : best.curBoard.neighbors()) {
+                if (best.prev == null || !neighbors.equals(best.prev.curBoard)) {
+                    pq.insert(new searchNode(neighbors, best, best.movesTillNode + 1));
                 }
             }
-            for (Board neighbours : bestTwin.curBoard.neighbours()) {
-                if (bestTwin.prev == null || !neighbours.equals(bestTwin.prev.curBoard)) {
-                    twinpq.insert(new searchNode(neighbours, bestTwin, bestTwin.movesTillNode + 1));
+            for (Board neighbors : bestTwin.curBoard.neighbors()) {
+                if (bestTwin.prev == null || !neighbors.equals(bestTwin.prev.curBoard)) {
+                    twinpq.insert(new searchNode(neighbors, bestTwin, bestTwin.movesTillNode + 1));
                 }
             }
 

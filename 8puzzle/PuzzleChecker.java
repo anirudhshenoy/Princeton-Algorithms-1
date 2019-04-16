@@ -3,6 +3,7 @@
  *  Execution:    java-algs4 PuzzleChecker filename1.txt filename2.txt ...
  *  Dependencies: Board.java Solver.java
  *
+                s.append(String.format("%2d ", tiles[i][j]));
  *  This program creates an initial board from each filename specified
  *  on the command line and finds the minimum number of moves to
  *  reach the goal state.

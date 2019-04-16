@@ -110,24 +110,24 @@ public class Board {
         return tilesCopy;
     }
 
-    public Iterable<Board> neighbours() {
+    public Iterable<Board> neighbors() {
         Stack<Board> s = new Stack<>();
         int[] rowCol = findZero();
         if ((rowCol[0] - 1) >= 0) {
-            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], -1, 0));
-            s.push(neighbour);
+            Board neighbor = new Board(swappedArray(rowCol[0], rowCol[1], -1, 0));
+            s.push(neighbor);
         }
         if ((rowCol[0] + 1) < tiles.length) {
-            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], +1, 0));
-            s.push(neighbour);
+            Board neighbor = new Board(swappedArray(rowCol[0], rowCol[1], +1, 0));
+            s.push(neighbor);
         }
         if ((rowCol[1] - 1) >= 0) {
-            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], 0, -1));
-            s.push(neighbour);
+            Board neighbor = new Board(swappedArray(rowCol[0], rowCol[1], 0, -1));
+            s.push(neighbor);
         }
         if ((rowCol[1] + 1) < tiles.length) {
-            Board neighbour = new Board(swappedArray(rowCol[0], rowCol[1], 0, +1));
-            s.push(neighbour);
+            Board neighbor = new Board(swappedArray(rowCol[0], rowCol[1], 0, +1));
+            s.push(neighbor);
         }
         return s;
 
